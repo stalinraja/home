@@ -3,10 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Under Construction</title>
+    <title>CSI TND HOME</title>
     <style>
         :root {
             --alien-green: #39ff14;
+            --construction-orange: #ff8c00;
         }
 
         body, html {
@@ -16,6 +17,7 @@
             width: 100%;
             background-color: #ffffff;
             display: flex;
+            flex-direction: column; /* Stack logo and button vertically */
             justify-content: center;
             align-items: center;
             overflow: hidden;
@@ -27,6 +29,7 @@
             width: 320px;
             max-width: 80%;
             animation: breathe 5s ease-in-out infinite;
+            margin-bottom: 30px; /* Space between logo and button */
         }
 
         .logo-container img {
@@ -34,42 +37,43 @@
             height: auto;
         }
 
-        /* Bottom Right Container */
+        /* Action Button */
+        .action-button {
+            padding: 12px 24px;
+            background-color: transparent;
+            color: var(--construction-orange);
+            border: 2px solid var(--construction-orange);
+            font-size: 16px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative; /* For fireworks positioning */
+            z-index: 10; /* Ensure button stays on top of fireworks */
+        }
+
+        .action-button:hover {
+            background-color: var(--construction-orange);
+            color: #ffffff;
+        }
+
+        /* Bottom Right Container (just the orange hexagon now) */
         .footer-status {
             position: absolute;
             bottom: 40px;
             right: 40px;
-            display: flex;
-            flex-direction: column;
-            align-items: flex-end;
-            gap: 15px;
-            cursor: pointer;
         }
 
-        /* Alien Green Text - No Background */
-        .status-text {
-            color: var(--alien-green);
-            font-size: 14px;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            font-weight: bold;
-            user-select: none;
-        }
-
-        /* Hollow Triple Hexagon Loader */
-        .hex-loader {
-            display: flex;
-            gap: 8px;
-        }
-
+        /* Rotating Orange Hexagon */
         .hexagon {
             width: 24px;
             height: 14px;
             background-color: transparent;
-            border-left: 2px solid var(--alien-green);
-            border-right: 2px solid var(--alien-green);
+            border-left: 2px solid var(--construction-orange);
+            border-right: 2px solid var(--construction-orange);
             position: relative;
-            transition: all 0.3s ease;
+            animation: rotateHex 4s linear infinite; /* Constantly rotate */
         }
 
         .hexagon::before, .hexagon::after {
@@ -77,7 +81,7 @@
             position: absolute;
             width: 16.97px;
             height: 16.97px;
-            border: 2px solid var(--alien-green);
+            border: 2px solid var(--construction-orange);
             left: 1.5px;
             transform: scaleY(0.5774) rotate(-45deg);
         }
@@ -85,21 +89,55 @@
         .hexagon::before { top: -10px; border-bottom: 0; border-left: 0; }
         .hexagon::after { bottom: -10px; border-top: 0; border-right: 0; }
 
-        /* Animation: Hexagons pulsing in sequence */
-        .hexagon:nth-child(1) { animation: pulse 1.5s infinite 0s; }
-        .hexagon:nth-child(2) { animation: pulse 1.5s infinite 0.2s; }
-        .hexagon:nth-child(3) { animation: pulse 1.5s infinite 0.4s; }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 0.3; transform: scale(1); }
-            50% { opacity: 1; transform: scale(1.1); }
-        }
 
         @keyframes breathe {
             0%, 100% { transform: scale(1); opacity: 0.95; }
             50% { transform: scale(1.03); opacity: 1; }
         }
 
+        @keyframes rotateHex {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Fireworks CSS */
+        .firework {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: transparent;
+            border-radius: 50%;
+            pointer-events: none; /* Don't interfere with button clicks */
+            animation: explode 4s ease-out forwards;
+        }
+
+        @keyframes explode {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+                background-color: var(--construction-orange); /* Start with orange */
+            }
+            25% {
+                transform: scale(10) translate(0, -50px);
+                opacity: 1;
+                background-color: #ff0000; /* Red */
+            }
+            50% {
+                transform: scale(20) translate(50px, -100px);
+                opacity: 0.8;
+                background-color: #0000ff; /* Blue */
+            }
+            75% {
+                transform: scale(30) translate(-50px, -150px);
+                opacity: 0.5;
+                background-color: #ffff00; /* Yellow */
+            }
+            100% {
+                transform: scale(40) translate(0, -200px);
+                opacity: 0;
+                background-color: #ffffff; /* White and fade */
+            }
+        }
     </style>
 </head>
 <body>
@@ -108,14 +146,46 @@
         <img src="diocese-logo.png" alt="Logo">
     </div>
 
-    <div class="footer-status" onclick="window.location.href='https://metakey.solutions'">
-        <div class="hex-loader">
-            <div class="hexagon"></div>
-            <div class="hexagon"></div>
-            <div class="hexagon"></div>
-        </div>
-        <div class="status-text">THIS PAGE IS UNDER CONSTRUCTION</div>
+    <button class="action-button" id="priorityButton">View Priority List</button>
+
+    <div class="footer-status">
+        <div class="hexagon"></div>
     </div>
+
+    <script>
+        const priorityButton = document.getElementById('priorityButton');
+
+        priorityButton.addEventListener('click', () => {
+            // Create firework elements
+            for (let i = 0; i < 20; i++) {
+                createFirework();
+            }
+
+            // Short delay for the "effect" before redirecting
+            setTimeout(() => {
+                window.location.href = "https://prioritylist.csitnd.org";
+            }, 4000); // 4 seconds delay
+        });
+
+        function createFirework() {
+            const firework = document.createElement('div');
+            firework.classList.add('firework');
+
+            // Random positioning near the button
+            const rect = priorityButton.getBoundingClientRect();
+            const x = rect.left + Math.random() * rect.width;
+            const y = rect.top + Math.random() * rect.height;
+            firework.style.left = `${x}px`;
+            firework.style.top = `${y}px`;
+
+            document.body.appendChild(firework);
+
+            // Remove the firework element after the animation
+            firework.addEventListener('animationend', () => {
+                firework.remove();
+            });
+        }
+    </script>
 
 </body>
 </html>
