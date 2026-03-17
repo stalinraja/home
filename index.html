@@ -8,6 +8,7 @@
     <style>
         :root {
             --brand-orange: #FF8C00;
+            --text-gray: #777;
         }
 
         body, html {
@@ -17,89 +18,81 @@
             display: flex; flex-direction: column;
             justify-content: center; align-items: center;
             overflow: hidden;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', Arial, sans-serif;
         }
 
-        /* Center Logo (Still) */
+        /* Center Logo */
         .logo-container {
-            width: 320px;
+            width: 300px;
             max-width: 80%;
-            margin-bottom: 30px;
-            z-index: 10;
+            margin-bottom: 40px;
         }
         .logo-container img { width: 100%; height: auto; }
 
         /* Action Button */
         .btn-launch {
-            padding: 18px 45px;
+            padding: 16px 40px;
             background: transparent;
             color: var(--brand-orange);
-            border: 3px solid var(--brand-orange);
-            font-weight: 800;
-            font-size: 1.1rem;
+            border: 2px solid var(--brand-orange);
+            font-weight: 700;
+            font-size: 1rem;
             letter-spacing: 2px;
             cursor: pointer;
-            border-radius: 50px;
-            transition: all 0.3s;
-            z-index: 10;
+            border-radius: 4px; /* Minimalist square-ish look */
+            transition: all 0.3s ease;
             text-transform: uppercase;
         }
 
         .btn-launch:hover {
             background: var(--brand-orange);
             color: white;
-            box-shadow: 0 10px 20px rgba(255,140,0,0.3);
-            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255,140,0,0.2);
         }
 
-        /* Simple Loading Hexagon (Bottom Right) */
-        .hex-loader {
+        /* Bottom Right Credit Section */
+        .credit-container {
             position: absolute;
-            bottom: 40px;
+            bottom: 30px;
             right: 40px;
-            width: 50px;
-            height: 28.87px; /* Correct height ratio for a hexagon */
-            background-color: transparent;
-            border-left: 4px solid var(--brand-orange);
-            border-right: 4px solid var(--brand-orange);
-            position: relative;
-            animation: hex-spin 2s linear infinite;
-            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: var(--text-gray);
+            font-size: 13px;
+            letter-spacing: 0.5px;
+            transition: color 0.3s;
         }
 
-        .hex-loader:before,
-        .hex-loader:after {
+        .credit-container:hover {
+            color: var(--brand-orange);
+        }
+
+        /* Simple Static Hexagon Shape */
+        .simple-hex {
+            width: 16px;
+            height: 9.24px;
+            background-color: transparent;
+            border-left: 2px solid currentColor;
+            border-right: 2px solid currentColor;
+            position: relative;
+        }
+
+        .simple-hex:before,
+        .simple-hex:after {
             content: "";
             position: absolute;
-            width: 35.36px; /* Correct size to complete the hexagon */
-            height: 35.36px;
-            border: 4px solid var(--brand-orange);
-            left: 3.3px; /* Center adjustment */
+            width: 11.31px;
+            height: 11.31px;
+            border: 2px solid currentColor;
+            left: 0.35px;
             transform: scaleY(0.5774) rotate(-45deg);
         }
 
-        .hex-loader:before {
-            top: -21px; /* Correct placement */
-            border-bottom: 0;
-            border-left: 0;
-        }
+        .simple-hex:before { top: -6.5px; border-bottom: 0; border-left: 0; }
+        .simple-hex:after { bottom: -6.5px; border-top: 0; border-right: 0; }
 
-        .hex-loader:after {
-            bottom: -21px;
-            border-top: 0;
-            border-right: 0;
-        }
-
-        @keyframes hex-spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        /* Prevent clicking the hexagon while redirecting from button */
-        .no-click {
-            pointer-events: none;
-            opacity: 0.5;
-        }
     </style>
 </head>
 <body>
@@ -110,37 +103,37 @@
 
     <button class="btn-launch" id="launchBtn">Launch Priority List</button>
 
-    <div class="hex-loader" id="metaLink" onclick="window.location.href='https://metakey.solutions'"></div>
+    <a href="https://metakey.solutions" class="credit-container">
+        <span>crafted by</span>
+        <div class="simple-hex"></div>
+    </a>
 
     <script>
         const btn = document.getElementById('launchBtn');
-        const hex = document.getElementById('metaLink');
 
         btn.addEventListener('click', () => {
-            // 1. Visually deactivate interactions
-            btn.style.opacity = '0';
+            // 1. Visually deactivate button
+            btn.style.opacity = '0.5';
             btn.style.pointerEvents = 'none';
-            hex.classList.add('no-click');
+            btn.innerText = 'Redirecting...';
 
-            // 2. Continuous Pro Fireworks for 4 Seconds
+            // 2. High-Quality Confetti Fireworks for 4 Seconds
             const end = Date.now() + 4000;
-            const colors = ['#FF8C00', '#FFD700', '#FFFFFF'];
+            const colors = ['#FF8C00', '#FFD700', '#ffffff'];
 
             (function frame() {
-                // Left side launch
                 confetti({
-                    particleCount: 5,
+                    particleCount: 3,
                     angle: 60,
-                    spread: 60,
-                    origin: { x: 0, y: 0.7 },
+                    spread: 55,
+                    origin: { x: 0, y: 0.8 },
                     colors: colors
                 });
-                // Right side launch
                 confetti({
-                    particleCount: 5,
+                    particleCount: 3,
                     angle: 120,
-                    spread: 60,
-                    origin: { x: 1, y: 0.7 },
+                    spread: 55,
+                    origin: { x: 1, y: 0.8 },
                     colors: colors
                 });
 
