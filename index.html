@@ -4,139 +4,112 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CSI TND HOME</title>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
         :root {
-            --alien-green: #39ff14;
-            --construction-orange: #ff8c00;
+            --brand-orange: #FF8C00;
+            --rocket-color: #333;
         }
 
         body, html {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            width: 100%;
+            margin: 0; padding: 0;
+            height: 100%; width: 100%;
             background-color: #ffffff;
-            display: flex;
-            flex-direction: column; /* Stack logo and button vertically */
-            justify-content: center;
-            align-items: center;
+            display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
             overflow: hidden;
-            font-family: 'Courier New', Courier, monospace;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
         }
 
-        /* Center Logo with Breathing Animation */
+        /* Center Logo */
         .logo-container {
-            width: 320px;
-            max-width: 80%;
-            animation: breathe 5s ease-in-out infinite;
-            margin-bottom: 30px; /* Space between logo and button */
+            width: 280px;
+            margin-bottom: 40px;
+            z-index: 10;
+        }
+        .logo-container img { width: 100%; height: auto; }
+
+        /* Rocket Launch Animation Container */
+        #rocket-container {
+            width: 60px;
+            height: 100px;
+            margin-bottom: 20px;
+            transition: transform 4s cubic-bezier(.47,0,.74,.71);
+            position: relative;
         }
 
-        .logo-container img {
-            width: 100%;
-            height: auto;
+        .rocket-svg { width: 100%; height: auto; }
+
+        .launching {
+            transform: translateY(-100vh);
         }
 
-        /* Action Button */
-        .action-button {
-            padding: 12px 24px;
-            background-color: transparent;
-            color: var(--construction-orange);
-            border: 2px solid var(--construction-orange);
-            font-size: 16px;
+        /* Button Styling */
+        .btn-launch {
+            padding: 15px 35px;
+            background: transparent;
+            color: var(--brand-orange);
+            border: 2px solid var(--brand-orange);
             font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 2px;
             cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative; /* For fireworks positioning */
-            z-index: 10; /* Ensure button stays on top of fireworks */
+            border-radius: 50px;
+            transition: all 0.3s;
+            z-index: 10;
+        }
+        .btn-launch:hover {
+            background: var(--brand-orange);
+            color: white;
+            box-shadow: 0 0 20px rgba(255,140,0,0.4);
         }
 
-        .action-button:hover {
-            background-color: var(--construction-orange);
-            color: #ffffff;
-        }
-
-        /* Bottom Right Container (just the orange hexagon now) */
-        .footer-status {
+        /* Beautiful Rotating Hexagon (Bottom Right) */
+        .hex-link {
             position: absolute;
             bottom: 40px;
             right: 40px;
+            cursor: pointer;
+            text-decoration: none;
         }
 
-        /* Rotating Orange Hexagon */
-        .hexagon {
-            width: 24px;
-            height: 14px;
-            background-color: transparent;
-            border-left: 2px solid var(--construction-orange);
-            border-right: 2px solid var(--construction-orange);
+        .hex-box {
+            width: 50px;
+            height: 50px;
             position: relative;
-            animation: rotateHex 4s linear infinite; /* Constantly rotate */
+            animation: rotate3D 6s linear infinite;
+            transform-style: preserve-3d;
         }
 
-        .hexagon::before, .hexagon::after {
-            content: "";
+        .hex-shape {
             position: absolute;
-            width: 16.97px;
-            height: 16.97px;
-            border: 2px solid var(--construction-orange);
-            left: 1.5px;
-            transform: scaleY(0.5774) rotate(-45deg);
+            width: 100%; height: 100%;
+            border: 2px solid var(--brand-orange);
+            clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+            background: rgba(255, 140, 0, 0.05);
+            box-shadow: inset 0 0 10px var(--brand-orange);
         }
 
-        .hexagon::before { top: -10px; border-bottom: 0; border-left: 0; }
-        .hexagon::after { bottom: -10px; border-top: 0; border-right: 0; }
-
-
-        @keyframes breathe {
-            0%, 100% { transform: scale(1); opacity: 0.95; }
-            50% { transform: scale(1.03); opacity: 1; }
+        @keyframes rotate3D {
+            0% { transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg); }
+            100% { transform: rotateX(360deg) rotateY(360deg) rotateZ(360deg); }
         }
 
-        @keyframes rotateHex {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        /* Fireworks CSS */
-        .firework {
+        /* Smoke particles */
+        .smoke {
             position: absolute;
-            width: 10px;
-            height: 10px;
-            background-color: transparent;
+            bottom: -10px;
+            left: 50%;
+            width: 10px; height: 10px;
+            background: #ddd;
             border-radius: 50%;
-            pointer-events: none; /* Don't interfere with button clicks */
-            animation: explode 4s ease-out forwards;
+            opacity: 0;
         }
-
-        @keyframes explode {
-            0% {
-                transform: scale(1);
-                opacity: 1;
-                background-color: var(--construction-orange); /* Start with orange */
-            }
-            25% {
-                transform: scale(10) translate(0, -50px);
-                opacity: 1;
-                background-color: #ff0000; /* Red */
-            }
-            50% {
-                transform: scale(20) translate(50px, -100px);
-                opacity: 0.8;
-                background-color: #0000ff; /* Blue */
-            }
-            75% {
-                transform: scale(30) translate(-50px, -150px);
-                opacity: 0.5;
-                background-color: #ffff00; /* Yellow */
-            }
-            100% {
-                transform: scale(40) translate(0, -200px);
-                opacity: 0;
-                background-color: #ffffff; /* White and fade */
-            }
+        .launching .smoke {
+            animation: smokeTrail 1s infinite;
+        }
+        @keyframes smokeTrail {
+            0% { opacity: 0.8; transform: translateX(-50%) scale(1); }
+            100% { opacity: 0; transform: translateX(-50%) scale(4) translateY(20px); }
         }
     </style>
 </head>
@@ -146,46 +119,59 @@
         <img src="diocese-logo.png" alt="Logo">
     </div>
 
-    <button class="action-button" id="priorityButton">View Priority List</button>
-
-    <div class="footer-status">
-        <div class="hexagon"></div>
+    <div id="rocket-container">
+        <svg class="rocket-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2L4.5 20.29L5.21 21L12 18L18.79 21L19.5 20.29L12 2Z" fill="#FF8C00"/>
+            <path d="M12 18V21" stroke="#FF8C00" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <div class="smoke"></div>
     </div>
 
-    <script>
-        const priorityButton = document.getElementById('priorityButton');
+    <button class="btn-launch" id="launchBtn">LAUNCH PRIORITY LIST</button>
 
-        priorityButton.addEventListener('click', () => {
-            // Create firework elements
-            for (let i = 0; i < 20; i++) {
-                createFirework();
+    <a href="https://metakey.solutions" class="hex-link">
+        <div class="hex-box">
+            <div class="hex-shape"></div>
+        </div>
+    </a>
+
+    <script>
+        const btn = document.getElementById('launchBtn');
+        const rocket = document.getElementById('rocket-container');
+
+        btn.addEventListener('click', () => {
+            // 1. Start Rocket Launch
+            rocket.classList.add('launching');
+            btn.style.opacity = '0';
+            btn.style.pointerEvents = 'none';
+
+            // 2. Trigger Smooth Fireworks (using Canvas-Confetti for that CodePen look)
+            const duration = 4 * 1000;
+            const animationEnd = Date.now() + duration;
+            const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+
+            function randomInRange(min, max) {
+              return Math.random() * (max - min) + min;
             }
 
-            // Short delay for the "effect" before redirecting
+            const interval = setInterval(function() {
+              const timeLeft = animationEnd - Date.now();
+
+              if (timeLeft <= 0) {
+                return clearInterval(interval);
+              }
+
+              const particleCount = 50 * (timeLeft / duration);
+              // since particles fall down, start a bit higher than random
+              confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } }));
+              confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } }));
+            }, 250);
+
+            // 3. Redirect after 4 seconds
             setTimeout(() => {
                 window.location.href = "https://prioritylist.csitnd.org";
-            }, 4000); // 4 seconds delay
+            }, 4000);
         });
-
-        function createFirework() {
-            const firework = document.createElement('div');
-            firework.classList.add('firework');
-
-            // Random positioning near the button
-            const rect = priorityButton.getBoundingClientRect();
-            const x = rect.left + Math.random() * rect.width;
-            const y = rect.top + Math.random() * rect.height;
-            firework.style.left = `${x}px`;
-            firework.style.top = `${y}px`;
-
-            document.body.appendChild(firework);
-
-            // Remove the firework element after the animation
-            firework.addEventListener('animationend', () => {
-                firework.remove();
-            });
-        }
     </script>
-
 </body>
 </html>
